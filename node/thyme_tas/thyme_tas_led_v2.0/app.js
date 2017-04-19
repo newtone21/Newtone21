@@ -12,6 +12,8 @@ var exec = require("child_process").exec;
 
 var wdt = require('./wdt');
 
+//var sh_serial = require('./mock_serial');
+
 var useparentport = '';
 var useparenthostname = '';
 
@@ -41,7 +43,7 @@ fs.readFile('conf.xml', 'utf-8', function (err, data) {
                 useparentport = conf.tas.parentport;
 
                 if(conf.upload != null) {
-                    if (conf.upload['ctname'] != null) {
+		    if (conf.upload['ctname'] != null) {
                         upload_arr[0] = conf.upload;
                     }
                     else {
@@ -71,6 +73,7 @@ var t_count = 0;
 
 var tas_download_count = 0;
 
+var test_c=3;
 function on_receive(data) {
     if (tas_state == 'connect' || tas_state == 'reconnect' || tas_state == 'upload') {
         var data_arr = data.toString().split('<EOF>');
@@ -82,19 +85,27 @@ function on_receive(data) {
 	//	console.log('!!!1!!!!!\n' + sink_str + '\n' +sink_obj.ctname+'\n'+sink_obj.con+'\n'+ tas_state + '\n' + line);
 
 		/*
-			sink_str => {"ctname":"cnt-led","con":"hello"}
-			sink_obj.ctname => cnt_led
-			sink_obj.con => hello
+			sink_str = {"ctname":"cnt-led","con":"hello"}
+			sink_obj.ctname = cnt-led
+			sink_obj.con = hello
 		*/
                 if (sink_obj.ctname == null || sink_obj.con == null) {
                     console.log('Received: data format mismatch');
                 }
                 else {
-                    if (sink_obj.con == 'hello') {
+		/*	if(test_c!=3){
+				control_led(test_c);
+				test_c=3;
+			}else{
+				control_led(test_c);
+				test_c=4;
+                	}
+		*/
+			if (sink_obj.con == 'hello') {
 			
 	//		console.log("!!!!!2!!!");
                         console.log('Received: ' + line);
-		//
+				
 			
                         if (++tas_download_count >= download_arr.length) {
                             tas_state = 'upload';
@@ -105,7 +116,7 @@ function on_receive(data) {
                         for (var j = 0; j < upload_arr.length; j++) {
                             if (upload_arr[j].ctname == sink_obj.ctname) {
                                 console.log('ACK : ' + line + ' <----');
-	//			console.log("!!!!4!!!!");
+				console.log("Test Device!!");
                                 break;
                             }
                         }
@@ -115,7 +126,7 @@ function on_receive(data) {
                                 g_down_buf = JSON.stringify({id: download_arr[i].id, con: sink_obj.con});
                                 console.log(g_down_buf + ' <----');
 
-//				console.log("!!5!!!!!!");
+	//			console.log("!!5!!!!!!");
                                 control_led(sink_obj.con);
                                 break;
                             }
@@ -185,6 +196,7 @@ function tas_watchdog() {
 	//var num_state = prompt("State Input : ");
 	//control_led(num_state);
 	//control_led(3);
+	//console.log('Test Device');
 }
 
 wdt.set_wdt(require('shortid').generate(), 3, tas_watchdog);

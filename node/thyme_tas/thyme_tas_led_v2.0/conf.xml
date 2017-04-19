@@ -3,9 +3,13 @@
     <tas>
         <parenthostname>localhost</parenthostname>
         <parentport>3105</parentport>
-    </tas>	
+    </tas>
+    <upload>
+	<ctname>cnt-led</ctname>
+        <id>led#1</id>
+    </upload>	
     <download>
         <ctname>cnt-led</ctname>
-        <id>led#3</id>
+        <id>led#1</id>
     </download>
 </m2m:conf>

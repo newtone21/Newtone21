@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define VCC_PIN 1
-#define GREEN_PIN 0 
-#define BLUE_PIN 16
+#define VCC_PIN 0
+#define GREEN_PIN 16 
+#define BLUE_PIN 1
 
 int turn_on_green(){
 	printf("%s\n", "Green Light ON!");

@@ -12,7 +12,7 @@ var xml2js = require('xml2js');
 
 var wdt = require('./wdt');
 //var sh_serial = require('./serial');
-
+//var sh_serial = require('./mock_serial');
 var serialport = require('serialport');
 
 var usecomport = '';
@@ -128,7 +128,8 @@ function on_receive(data) {
                         for (var j = 0; j < upload_arr.length; j++) {
                             if (upload_arr[j].ctname == sink_obj.ctname) {
                                 console.log('ACK : ' + line + ' <----');
-                                break;
+                               	console.log('!!!!!!!!!!!!!!Upload!!!!!!!!!!!!!');
+				 break;
                             }
                         }
 
@@ -137,6 +138,7 @@ function on_receive(data) {
                                 g_down_buf = JSON.stringify({id: download_arr[i].id, con: sink_obj.con});
                                 console.log(g_down_buf + ' <----');
                                 myPort.write(g_down_buf);
+                               	console.log('!!!!!!!!!!!!!!Download!!!!!!!!!!!!!');
                                 break;
                             }
                         }
@@ -233,6 +235,12 @@ function showPortOpen() {
 var count = 0;
 function saveLastestData(data) {
     var val = data.readUInt16LE(0, true);
+	
+         count = 1;
+         g_sink_buf_start = 1;
+         g_sink_ready.push(val);
+
+    
 
     if(g_sink_buf_start == 0) {
         if(val == 0x16) {
@@ -272,8 +280,7 @@ function saveLastestData(data) {
             var nValue = g_sink_ready[3] * 256 + g_sink_ready[4];
 
             console.log(nValue);
-
-            if(tas_state == 'upload') {
+            //if(tas_state == 'upload') {
                 for(var i = 0; i < upload_arr.length; i++) {
                     if(upload_arr[i].ctname == 'cnt-co2') {
                         var cin = {ctname: upload_arr[i].ctname, con: nValue.toString()};
@@ -282,7 +289,7 @@ function saveLastestData(data) {
                         break;
                     }
                 }
-            }
+           // }
 
             g_sink_ready = [];
             count = 0;
